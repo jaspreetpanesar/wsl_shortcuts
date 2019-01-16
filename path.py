@@ -5,6 +5,8 @@
 
 Returns the absoloute windows filesystem path of a directory
 or file to be used in WSL.
+
+-Japreet Panesar
 """
 
 import logging
