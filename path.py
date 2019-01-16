@@ -19,9 +19,9 @@ log = logging.getLogger(__name__)
 log.setLevel(logging.DEBUG)
 formatter = logging.Formatter('%(asctime)s - %(levelname)s - %(message)s')
 
-# error logging
+# for error logging
 try:
-    fh = logging.FileHandler("logs/wsl_path.log")
+    fh = logging.FileHandler("logs/path.log")
     fh.setLevel(logging.ERROR)
     fh.setFormatter(formatter)
     log.addHandler(fh)
@@ -46,7 +46,6 @@ except (KeyError, Exception) as e:
 
 class PathDoesNotExistException(Exception):
     pass
-
 
 
 class Path(object):
@@ -95,6 +94,9 @@ class Path(object):
 
 
     def toString(self):
+        """
+        return path in windows file format
+        """
         string = "%s:\\" %self.drive.upper()
         for i in self.path:
             string += "%s\\" %i
@@ -134,7 +136,7 @@ if __name__ == "__main__":
     
     # setup argument parser to read path from user
     parser = argparse.ArgumentParser(
-                prog="python wsl_path.py [path]",
+                prog="python path.py [path]",
                 description=__doc__
                 )
     parser.add_argument("path", nargs="?", type=str, 
