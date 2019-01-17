@@ -3,7 +3,7 @@
 """
 **Formatted Path**
 
-Returns the absoloute windows filesystem path of a directory
+Returns the absolute windows filesystem path of a directory
 or file to be used in WSL.
 
 -Japreet Panesar
@@ -19,7 +19,7 @@ log = logging.getLogger(__name__)
 log.setLevel(logging.DEBUG)
 formatter = logging.Formatter('%(asctime)s - %(levelname)s - %(message)s')
 
-# for error logging
+# error logging
 try:
     fh = logging.FileHandler("logs/path.log")
     fh.setLevel(logging.ERROR)
@@ -48,6 +48,7 @@ class PathDoesNotExistException(Exception):
     pass
 
 
+
 class Path(object):
 
     def __init__(self, path):
@@ -57,7 +58,7 @@ class Path(object):
 
         self.drive = "?"
 
-        # convert relative paths to absoloute path
+        # convert relative paths to absolute path
         # remove index 0, which is empty
         self.path = os.path.abspath(path).split("/")[1:]
         self.convert()
@@ -78,7 +79,7 @@ class Path(object):
         convert linux path style to windows path style
 
         Returns:
-            string: absoloute windows filesystem path
+            string: absolute windows filesystem path
         """
         if self.isWindows():
             # remove 'mnt', extract drive letter, remove drive letter
