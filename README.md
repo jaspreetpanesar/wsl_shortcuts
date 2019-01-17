@@ -28,5 +28,5 @@ python command.py [external program] [path | empty for current dir]
 Jaspreet Panesar
 
 ## Licence
-
+This project is licensed under the MIT License - see the [LICENSE.md](LICENSE.md) file for details
 
