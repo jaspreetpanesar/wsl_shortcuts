@@ -58,9 +58,10 @@ class Path(object):
 
         self.drive = "?"
 
-        # convert relative paths to absolute path
+        # dereference symbolic links using realpath
+        # convert relative paths using abspath
         # remove index 0, which is empty
-        self.path = os.path.abspath(path).split("/")[1:]
+        self.path = os.path.abspath(os.path.realpath(path)).split("/")[1:]
         self.convert()
 
 
