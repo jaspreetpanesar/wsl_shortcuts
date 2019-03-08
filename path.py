@@ -51,18 +51,20 @@ class PathDoesNotExistException(Exception):
 
 class Path(object):
 
-    def __init__(self, path):
+    def __init__(self, path, keepLinux=False):
         
         if not os.path.isdir(path) and not os.path.isfile(path):
             raise PathDoesNotExistException("Location does not exist")
 
+        self.keepLinux = keepLinux
         self.drive = "?"
 
         # dereference symbolic links using realpath
         # convert relative paths using abspath
         # remove index 0, which is empty
         self.path = os.path.abspath(os.path.realpath(path)).split("/")[1:]
-        self.convert()
+        if not self.keepLinux:
+            self.convert()
 
 
     def isWindows(self):
@@ -95,7 +97,7 @@ class Path(object):
             self.drive = WSL_DRIVE
 
 
-    def toString(self):
+    def showWindows(self):
         """
         return path in windows file format
         """
@@ -106,13 +108,34 @@ class Path(object):
         return string
 
 
+    def showLinux(self):
+        """
+        return path in linux file format
+        """
+        string = "/"
+        for i in self.path:
+            string += "%s/" %i
+        string = string.rstrip("/")
+        return string
+
+
+    def toString(self):
+        """
+        return path in string format
+        """
+        if self.keepLinux:
+            return self.showLinux()
+        else:
+            return self.showWindows()
+
+
     def __repr__(self):
         return "<%s(\"%s\")>" %(type(self).__name__, self.toString())
 
 
 
 
-def convert_path(path):
+def convert_path(path, keepLinux=False):
     """
     Args:
         path (string): directory or file location
@@ -121,17 +144,17 @@ def convert_path(path):
         string: windows formatted absolute path
     """
     if path:
-        rpath = Path(path)
+        rpath = Path(path, keepLinux)
     else:
-        rpath = Path(os.environ["PWD"])
+        rpath = Path(os.environ["PWD"], keepLinux)
     return "'%s'" %rpath.toString()
 
 
-def main(path):
+def main(args):
     try:
-        print(convert_path(path))
+        print(convert_path(args.path, keepLinux=args.linux))
     except PathDoesNotExistException as e:
-        log.error("Error: %s (%s)" %(e, path))
+        log.error("Error: %s (%s)" %(e, args.path))
 
 
 if __name__ == "__main__":
@@ -143,9 +166,10 @@ if __name__ == "__main__":
                 )
     parser.add_argument("path", nargs="?", type=str, 
             help="file/directory path or empty for current directory")
+    parser.add_argument("-l", "--linux", action="store_true", help="do not convert to windows path")
     args = parser.parse_args()
 
-    main(args.path)
+    main(args)
 
 
 
