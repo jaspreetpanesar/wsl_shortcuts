@@ -154,10 +154,19 @@ def convert_path(path, keepLinux=False):
 def main(args):
     try:
         path = convert_path(args.path, keepLinux=args.linux)
+
+        # remove wrapping apostrophes from path
+        if args.remove:
+            path = path.lstrip("'")
+            path = path.rstrip("'")
+
+        # copy path to clipboard
         if args.copy:
             pyperclip.copy(path)
             print("Path copied to clipboard")
+
         print(path)
+
     except PathDoesNotExistException as e:
         log.error("Error: %s (%s)" %(e, args.path))
 
@@ -173,6 +182,7 @@ if __name__ == "__main__":
             help="file/directory path or empty for current directory")
     parser.add_argument("-l", "--linux", action="store_true", help="do not convert to windows path")
     parser.add_argument("-c", "--copy", action="store_true", help="copy path to clipboard")
+    parser.add_argument("-r", "--remove", action="store_true", help="remove wrapping apostrophes from path")
     args = parser.parse_args()
 
     main(args)
