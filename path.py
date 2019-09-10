@@ -13,6 +13,7 @@ import logging
 import argparse
 import os
 import sys
+import pyperclip
 
 # ----- LOGGING SETUP -----
 log = logging.getLogger(__name__)
@@ -152,7 +153,11 @@ def convert_path(path, keepLinux=False):
 
 def main(args):
     try:
-        print(convert_path(args.path, keepLinux=args.linux))
+        path = convert_path(args.path, keepLinux=args.linux)
+        if args.copy:
+            pyperclip.copy(path)
+            print("Path copied to clipboard")
+        print(path)
     except PathDoesNotExistException as e:
         log.error("Error: %s (%s)" %(e, args.path))
 
@@ -167,6 +172,7 @@ if __name__ == "__main__":
     parser.add_argument("path", nargs="?", type=str, 
             help="file/directory path or empty for current directory")
     parser.add_argument("-l", "--linux", action="store_true", help="do not convert to windows path")
+    parser.add_argument("-c", "--copy", action="store_true", help="copy path to clipboard")
     args = parser.parse_args()
 
     main(args)
